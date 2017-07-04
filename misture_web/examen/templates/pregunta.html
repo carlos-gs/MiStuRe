@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+
+        <p>
+            Hola {{ user.username }}. Quedan {{ preguntas_pendientes }} por contextar.
+            Pasar a otra <a href="{% url 'examen:pregunta' cuestion.correccion.pk %}">pregunta</a>.
+            Volver al <a href="{% url 'examen:examen_id' cuestion.correccion.pk %}">listado</a>.
+        </p>
+        {% if cuestion.respuesta or cuestion.estado > 1 %}<b>PREGUNTA YA RESPONDIDA.</b> {% endif %}
+        <hr>
+
+        {# {{ cuestion.correccion.pk }} <br>    {{ cuestion.pk }} <br>    {{ cuestion.tipo }} <br> #}
+        <p class="cuestion_examen_contenido">{{ cuestion.contenido|default:''|safe|linebreaksbr }} <br> </p>
+
+        <br>
+        <p class="cuestion_examen_pregunta">{{ cuestion.pregunta|safe|linebreaksbr|default:'' }} <br> </p>
+
+
+        {% if cuestion.estado <= 2 and form.agregar %}
+        <hr>
+            <form action="{% url 'examen:pregunta_id' cuestion.correccion.pk  cuestion.pk   %}" method="post">
+                {% csrf_token %}
+
+                {% if cuestion.tipo == 2 %}
+                    {% for opc_resp in cuestion.opciones_respuesta %}
+                        <input type="radio" name="respuesta" id="id_respuesta_{{ forloop.counter }}"
+                               value="{{ forloop.counter }}" {% if opc_resp == cuestion.respuesta %} checked="True" {% endif %} />
+                        <label for="id_respuesta_{{ forloop.counter }}">
+                            {{ opc_resp }}
+                        </label><br />
+                    {% endfor %}
+                {% endif %}
+                {% if cuestion.tipo == 1 or cuestion.tipo == 3  %}
+                   <br>
+                    <label for="id_respuesta" value="Valor inicial">Contextación:</label>
+                    <input type="text" name="respuesta" required id="id_respuesta_0" maxlength="1000"
+                           value="{{ cuestion.respuesta|default:'' }}"/>
+                {% endif %}
+
+                {% if form.agregar.errors %}
+                <p>Errores en el formulario: {{ form.agregar.errors }}</p>
+                {% endif %}
+
+                <br>
+
+                <input type="submit" class="btn btn-success" value="Guardar y Siguiente" />
+            </form>
+
+        {% endif %}
+
+        {% if cuestion.estado >= 3 %}
+
+            <p class="cuestion_examen_opciones">
+                {% if cuestion.opciones_respuesta %}
+                <hr>
+                    <ul>
+                    {% for opc_resp in cuestion.opciones_respuesta %}
+                         <li>{{ opc_resp }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if cuestion.respuesta %}
+                    <hr>
+                    <br><b>Respuesta del alumno:</b>  {{ cuestion.respuesta }}
+                {% endif %}
+
+            </p>
+
+        {% endif %}
+
+
+
+    {% endif %}
+{% endblock content %}

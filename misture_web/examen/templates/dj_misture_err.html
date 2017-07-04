@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+
+{% block dj_misture_err %}
+    {% if misture_error %}
+<p> {{ misture_error.mensaje }}</p>
+    {% endif %}
+{% endblock %}
+
+{% block content %} {% endblock %}

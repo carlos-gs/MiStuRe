@@ -1,0 +1,60 @@
+<html>
+<head>
+{% block css %}{% endblock %}
+{% block javascript %}{% endblock %}
+
+{% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link href="https://fortawesome.github.io/Font-Awesome/assets/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static "css/estilo.css" %}" type="text/css"/>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div class="container">
+            <nav class="navbar navbar-inverse" role="navigation">
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        {% if user.is_superuser %}
+                            <li><a href="/admin/">Admin</a></li>
+                        {% endif %}
+                        <li><a href="/">Home</a></li>
+                        <li><a href="{% url 'examen:examenes' %}">Exámenes</a></li>
+                      </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'logout' %}">Cerrar sesión {{ user.username }}</a>
+                            {% else %}
+                                <a href="{% url 'login' %}">Iniciar sesión.</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    {% if request.path == "/examen/index/"%}
+        <div class="image">
+            <img class="imgen" style="width: 100%; opacity:0.7;" src="/static/images/shutterstock_273368402.jpg"/><h2 class="h3">BIENVENIDO A LA PÁGINA DE EXÁMENES DE MISTURE</h2></div>
+    {% else %}
+        <div id="page">
+            <div id="content">
+                {% block dj_misture_err %} {% endblock %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    {% endif %}
+    <div class="footer">
+        <div class="container">
+            <div class="col-md-6">
+                <p><a href="javascript:history.back(1)" class="white_a">Volver Atrás</a></p>
+            </div>
+            <div class="col-md-6">
+                <p style="text-align:right;">{% block copyright %}© 2017 Carlos González Sesmero{% endblock %}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

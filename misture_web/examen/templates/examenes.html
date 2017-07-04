@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+    <h4>LISTADO DE EXAMENES PARA {{ user.username }}</h4>
+
+        <ul>
+        {% for corr in correcciones %}
+
+            <li>Cuestiones de la corrección id <a href="{% url 'examen:examen_id' corr.pk  %}">_{{ corr.pk|make_list|slice:"15:"|join:'' }}</a></li>
+            <ul>
+                {% if corr.actividad.descripcion %}<li>Actividad: {{ corr.actividad.descripcion }}</li> {% endif %}
+                {% if corr.desarrollador %}<li>Desarrollador: {{ corr.desarrollador.pk }}</li> {% endif %}
+                {% if corr.fecha %}<li>Fecha ejecución: {{ corr.fecha }}</li> {% endif %}
+            </ul>
+            <br>
+        {% endfor %}
+        </ul>
+        {% if cuest %}{% endif %}
+{% endblock content %}
+
+
+
+
+
+

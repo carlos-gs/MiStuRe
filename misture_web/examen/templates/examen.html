@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+    {% if correccion %}
+        {% if correccion.actividad.descripcion %}
+        <h4>CUESTIONES PARA {{ correccion.actividad.descripcion }}</h4>
+        <h5> Corrección:
+        _{{ idcorreccion|slice:"15:" }} at {{ correccion.fecha }}
+        </h5>
+        <hr>
+        {% endif %}
+    {% endif %}
+
+        <ul>
+            {% if cuestiones %}
+                {% for cuest in cuestiones %}
+
+                    <li>Pregunta id <a href="{% url 'examen:pregunta_id' cuest.correccion.pk cuest.pk  %}">_{{ cuest.pk|make_list|slice:"15:"|join:'' }}</a></li>
+                    <ul>
+                        {% if cuest.pregunta %}
+                            <li>Pregunta:
+                                {% if cuest.pregunta|length > 70 %}{{ cuest.pregunta|slice:':40' }} <b>[...]</b> {{ cuest.pregunta|slice:'-30:' }}
+                                {% else %} {{ cuest.pregunta }}
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                        {% if cuest.respuesta or cuest.estado > 1 %}<li>Respondida: Si {#{ cuest.respondida|default:'Si' }#}</li> {% endif %}
+                        {% if cuest.fecha_respuesta %}<li>Fecha respuesta: {{ cuest.fecha_respuesta|default:'' }}</li> {% endif %}
+                    </ul>
+                    <br>
+
+                    {% if cuest %}{% endif %}
+                {% endfor %}
+            {% if cuestiones|length == 0 %}
+                 <h6>Todavía no hemos generado tu examen. Pregunta a tu profesor.</h6>
+            {% endif %}
+            {% endif %}
+        </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        {% if flag_sin_confirmar %}
+        <form action="{% url 'examen:examen_id' idcorreccion %}" method="post">
+            {% csrf_token %}
+            {{ form.confirmar.as_p }}
+            <input type="submit" class="btn btn-warning" value="Confirmar respuestas." />
+        </form>
+        {% endif %}
+{% endblock content %}
+
+
+
+
+
+
